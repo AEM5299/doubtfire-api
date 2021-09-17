@@ -126,6 +126,11 @@ module Api
       expose :group_memberships, using: GroupMembershipEntity do |unit, options|
         unit.group_memberships.where(active: true)
       end
+
+      expose :iotrack do |unit, options|
+        tutorial_rooms = unit.tutorials.map { |tutorial| tutorial.room_id }
+        Role.student == unit.role_for(options[:user]) && options[:user].check_ins.where(room_id: tutorial_rooms).only_active.count > 0
+      end
     end
   end
 end
